@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Huobi.SDK.Core.Spot.WS.Response.AccountOrder;
 using Huobi.SDK.Core.WSBase;
 using Newtonsoft.Json;
@@ -11,6 +12,7 @@ namespace Huobi.SDK.Core.Spot.WS
         private string path = null;
         private string accessKey = null;
         private string secretKey = null;
+        private List<WebSocketOp> socketConnections = new List<WebSocketOp>();
 
         public WSAccountOrderClient(string accessKey, string secretKey, string host = Host.SPOT)
         {
@@ -37,6 +39,7 @@ namespace Huobi.SDK.Core.Spot.WS
             WebSocketOp wsop = new WebSocketOp(this.path, sub_str, callbackFun, typeof(SubOrdersResponse), true, this.host,
                                                this.accessKey, this.secretKey, true);
             wsop.Connect();
+            socketConnections.Add(wsop);
         }
         #endregion
 
@@ -58,6 +61,7 @@ namespace Huobi.SDK.Core.Spot.WS
             WebSocketOp wsop = new WebSocketOp(this.path, sub_str, callbackFun, typeof(SubTradeClearingResponse), true, this.host,
                                                this.accessKey, this.secretKey, true);
             wsop.Connect();
+            socketConnections.Add(wsop);
         }
         #endregion
 
@@ -78,7 +82,15 @@ namespace Huobi.SDK.Core.Spot.WS
             WebSocketOp wsop = new WebSocketOp(this.path, sub_str, callbackFun, typeof(SubAccountResponse), true, this.host,
                                                this.accessKey, this.secretKey, true);
             wsop.Connect();
+            socketConnections.Add(wsop);
         }
         #endregion
+
+
+        public void Disconnect()
+        {
+            socketConnections.ForEach(s => s.Disconnect());
+            socketConnections.Clear();
+        }
     }
 }

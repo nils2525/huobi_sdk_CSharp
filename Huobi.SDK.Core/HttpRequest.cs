@@ -26,7 +26,6 @@ namespace Huobi.SDK.Core
             var httpClient = new HttpClient();
 
             _logger.RquestStart("GET", url);
-
             string response = await httpClient.GetStringAsync(url);
 
             _logger.RequestEnd();

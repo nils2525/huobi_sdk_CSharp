@@ -1,6 +1,7 @@
 ﻿using Huobi.SDK.Core.Spot.WS.Response.Market;
 using Huobi.SDK.Core.WSBase;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace Huobi.SDK.Core.Spot.WS
 {
@@ -9,6 +10,7 @@ namespace Huobi.SDK.Core.Spot.WS
         private string host = null;
         private string path = null;
         private string mbp = null;
+        private List<WebSocketOp> socketConnections = new List<WebSocketOp>();
 
         public WSMarketClient(string host = Host.SPOT)
         {
@@ -34,10 +36,11 @@ namespace Huobi.SDK.Core.Spot.WS
 
             WebSocketOp wsop = new WebSocketOp(this.path, sub_str, callbackFun, typeof(SubKLineResponse), true, this.host);
             wsop.Connect();
+            socketConnections.Add(wsop);
         }
         #endregion
 
-         #region ticker
+        #region ticker
         public delegate void _OnSubTickerResponse(SubTickerResponse data);
 
         /// <summary>
@@ -53,6 +56,7 @@ namespace Huobi.SDK.Core.Spot.WS
 
             WebSocketOp wsop = new WebSocketOp(this.path, sub_str, callbackFun, typeof(SubTickerResponse), true, this.host);
             wsop.Connect();
+            socketConnections.Add(wsop);
         }
         #endregion
 
@@ -73,6 +77,7 @@ namespace Huobi.SDK.Core.Spot.WS
 
             WebSocketOp wsop = new WebSocketOp(this.path, sub_str, callbackFun, typeof(SubDepthResponse), true, this.host);
             wsop.Connect();
+            socketConnections.Add(wsop);
         }
         #endregion
 
@@ -100,6 +105,7 @@ namespace Huobi.SDK.Core.Spot.WS
 
             WebSocketOp wsop = new WebSocketOp(path, sub_str, callbackFun, typeof(SubMBPResponse), true, this.host);
             wsop.Connect();
+            socketConnections.Add(wsop);
         }
         #endregion
 
@@ -119,6 +125,7 @@ namespace Huobi.SDK.Core.Spot.WS
 
             WebSocketOp wsop = new WebSocketOp(this.path, sub_str, callbackFun, typeof(SubBBOResponse), true, this.host);
             wsop.Connect();
+            socketConnections.Add(wsop);
         }
         #endregion
 
@@ -133,11 +140,12 @@ namespace Huobi.SDK.Core.Spot.WS
         public void SubTradeDetail(string symbol, _OnSubTradeDetailResponse callbackFun)
         {
             string ch = $"market.{symbol}.trade.detail";
-            WSSubData subData = new WSSubData() { sub = ch};
+            WSSubData subData = new WSSubData() { sub = ch };
             string sub_str = JsonConvert.SerializeObject(subData);
 
             WebSocketOp wsop = new WebSocketOp(this.path, sub_str, callbackFun, typeof(SubTradeDetailResponse), true, this.host);
             wsop.Connect();
+            socketConnections.Add(wsop);
         }
         #endregion
 
@@ -157,6 +165,7 @@ namespace Huobi.SDK.Core.Spot.WS
 
             WebSocketOp wsop = new WebSocketOp(this.path, sub_str, callbackFun, typeof(SubDetailResponse), true, this.host);
             wsop.Connect();
+            socketConnections.Add(wsop);
         }
         #endregion
 
@@ -171,13 +180,19 @@ namespace Huobi.SDK.Core.Spot.WS
         public void SubDetail(string symbol, _OnSubETPResponse callbackFun)
         {
             string ch = $"market.{symbol}.etp";
-            WSSubData subData = new WSSubData() { sub = ch};
+            WSSubData subData = new WSSubData() { sub = ch };
             string sub_str = JsonConvert.SerializeObject(subData);
 
             WebSocketOp wsop = new WebSocketOp(this.path, sub_str, callbackFun, typeof(SubETPResponse), true, this.host);
             wsop.Connect();
+            socketConnections.Add(wsop);
         }
         #endregion
 
+        public void Disconnect()
+        {
+            socketConnections.ForEach(s => s.Disconnect());
+            socketConnections.Clear();
+        }
     }
 }

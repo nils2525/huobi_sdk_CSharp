@@ -7,9 +7,8 @@ using Huobi.SDK.Core.RequestBuilder;
 
 namespace Huobi.SDK.Core.WSBase
 {
-    public class WebSocketOp
+    public class WebSocketOp : LoggableClass
     {
-        protected ILogger logger = new ConsoleLogger();
         private string host = null;
         private string path = null;
         private string subStr = null;
@@ -104,7 +103,7 @@ namespace Huobi.SDK.Core.WSBase
         /// <param name="e"></param>
         private void OnOpen(object sender, EventArgs e)
         {
-            logger.Log(Log.LogLevel.Info, "WebSocket opened");
+            Logger.Log(Log.LogLevel.Info, "WebSocket opened");
             isConnected = true;
 
             if (accessKey != null && secretKey != null)
@@ -127,7 +126,7 @@ namespace Huobi.SDK.Core.WSBase
 
                     string auth_str = JsonConvert.SerializeObject(auth);
                     websocket.Send(auth_str);
-                    logger.Log(Log.LogLevel.Info, $"has send: {auth_str}");
+                    Logger.Log(Log.LogLevel.Info, $"has send: {auth_str}");
                 }
                 else
                 {
@@ -147,7 +146,7 @@ namespace Huobi.SDK.Core.WSBase
 
                     string auth_str = JsonConvert.SerializeObject(auth);
                     websocket.Send(auth_str);
-                    logger.Log(Log.LogLevel.Info, $"has send: {auth_str}");
+                    Logger.Log(Log.LogLevel.Info, $"has send: {auth_str}");
                 }
             }
             websocket.Send(subStr);
@@ -161,7 +160,7 @@ namespace Huobi.SDK.Core.WSBase
         private void OnClose(object sender, EventArgs e)
         {
             isConnected = false;
-            logger.Log(Log.LogLevel.Info, "WebSocket close.");
+            Logger.Log(Log.LogLevel.Info, "WebSocket close.");
 
             if (autoReconnect == true && !isManclose)
             {
@@ -176,7 +175,7 @@ namespace Huobi.SDK.Core.WSBase
         /// <param name="e"></param>
         private void OnError(object sender, ErrorEventArgs e)
         {
-            logger.Log(Log.LogLevel.Error, $"WebSocket error: {e.Message}");
+            Logger.Log(Log.LogLevel.Error, $"WebSocket error: {e.Message}");
         }
 
         /// <summary>
@@ -229,16 +228,16 @@ namespace Huobi.SDK.Core.WSBase
                         }
                         else
                         {
-                            logger.Log(Log.LogLevel.Info, $"websocket has received data: {data}");
+                            Logger.Log(Log.LogLevel.Info, $"websocket has received data: {data}");
                         }
                         break;
                     case "req":
                     case "sub":
                     case "unsub":
-                        logger.Log(Log.LogLevel.Info, $"websocket has received data: {data}");
+                        Logger.Log(Log.LogLevel.Info, $"websocket has received data: {data}");
                         break;
                     default:
-                        logger.Log(Log.LogLevel.Info, $"unknown data: {data}");
+                        Logger.Log(Log.LogLevel.Info, $"unknown data: {data}");
                         break;
                 }
             }
@@ -263,7 +262,7 @@ namespace Huobi.SDK.Core.WSBase
                         }
                         else
                         {
-                            logger.Log(Log.LogLevel.Info, $"websocket has received data: {data}");
+                            Logger.Log(Log.LogLevel.Info, $"websocket has received data: {data}");
                         }
                         break;
                     case "close":
@@ -271,20 +270,20 @@ namespace Huobi.SDK.Core.WSBase
                     case "auth":
                     case "sub":
                     case "unsub":
-                        logger.Log(Log.LogLevel.Info, $"websocket has received data: {data}");
+                        Logger.Log(Log.LogLevel.Info, $"websocket has received data: {data}");
                         break;
                     default:
-                        logger.Log(Log.LogLevel.Info, $"unknown data: {data}");
+                        Logger.Log(Log.LogLevel.Info, $"unknown data: {data}");
                         break;
                 }
             }
             else if (jdata.ContainsKey("subbed")) // sub success reply
             {
-                logger.Log(Log.LogLevel.Info, $"websocket has received data: {data}");
+                Logger.Log(Log.LogLevel.Info, $"websocket has received data: {data}");
             }
             else if (jdata.ContainsKey("unsubbed")) // unsub success reply
             {
-                logger.Log(Log.LogLevel.Info, $"websocket has received data: {data}");
+                Logger.Log(Log.LogLevel.Info, $"websocket has received data: {data}");
             }
             else if (jdata.ContainsKey("ch")) // market sub reply data
             {
@@ -294,7 +293,7 @@ namespace Huobi.SDK.Core.WSBase
                 }
                 else
                 {
-                    logger.Log(Log.LogLevel.Info, $"websocket has received data: {data}");
+                    Logger.Log(Log.LogLevel.Info, $"websocket has received data: {data}");
                 }
             }
             else if (jdata.ContainsKey("rep")) // market request reply data
@@ -305,16 +304,16 @@ namespace Huobi.SDK.Core.WSBase
                 }
                 else
                 {
-                    logger.Log(Log.LogLevel.Info, $"websocket has received data: {data}");
+                    Logger.Log(Log.LogLevel.Info, $"websocket has received data: {data}");
                 }
             }
             else if (jdata.ContainsKey("err-code")) // market request reply data
             {
-                logger.Log(Log.LogLevel.Info, $"websocket has received data: {data}");
+                Logger.Log(Log.LogLevel.Info, $"websocket has received data: {data}");
             }
             else
             {
-                logger.Log(Log.LogLevel.Info, $"unknown data: {data}");
+                Logger.Log(Log.LogLevel.Info, $"unknown data: {data}");
             }
         }
 

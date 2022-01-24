@@ -1,11 +1,12 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 
 namespace Huobi.SDK.Core.Log
 {
     /// <summary>
     /// Responsible to measure SDK performance
     /// </summary>
-    public class PerformanceLogger
+    public class PerformanceLogger : LoggableClass
     {
         struct LogContent
         {
@@ -21,7 +22,6 @@ namespace Huobi.SDK.Core.Log
 
         private bool _enable;
         private Stopwatch _stopwatch;
-        private ILogger _logger;
         private int _logContentLineCount;
 
         private long _requestStart;
@@ -36,9 +36,6 @@ namespace Huobi.SDK.Core.Log
 
             // Stopwatch
             _stopwatch = new Stopwatch();
-
-            // Performance logger
-            _logger = new ConsoleLogger();
 
             // Log content line count
             _logContentLineCount = 1;
@@ -123,10 +120,10 @@ namespace Huobi.SDK.Core.Log
                 // Log header if it is the first record
                 if (_logContentLineCount == 1)
                 {
-                    _logger.Log(LogLevel.Trace, $"Index|Endpoint|URL|Total Duration(ms)|Request Duration(ms)|SDK Duration(ms)");
+                    Logger.Log(LogLevel.Trace, $"Index|Endpoint|URL|Total Duration(ms)|Request Duration(ms)|SDK Duration(ms)");
                 }
 
-                _logger.Log(LogLevel.Trace, $"{_logContent.Id}|{_logContent.Endpoint}|{_logContent.Url}|{_logContent.TotalDuration}|{_logContent.NetworkDuration}|{_logContent.SDKDuration}");
+                Logger.Log(LogLevel.Trace, $"{_logContent.Id}|{_logContent.Endpoint}|{_logContent.Url}|{_logContent.TotalDuration}|{_logContent.NetworkDuration}|{_logContent.SDKDuration}");
 
                 _logContentLineCount++;
             }

@@ -12,7 +12,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="LinearSwap\" />
-    <Folder Include="Log\" />
     <Folder Include="RequestBuilder\" />
     <Folder Include="WSBase\" />
   </ItemGroup>

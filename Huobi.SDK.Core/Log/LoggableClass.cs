@@ -7,7 +7,23 @@ namespace Huobi.SDK.Core
 {
     public abstract class LoggableClass
     {
-        protected ILogger Logger { get; private set; } = new ConsoleLogger();
+        private static Func<ILogger> _createLoggerFunc = () => new ConsoleLogger();
+        public static Func<ILogger> CreateLogger
+        {
+            get
+            {
+                return _createLoggerFunc;
+            }
+            set
+            {
+                if (value != null)
+                {
+                    _createLoggerFunc = value;
+                }
+            }
+        }
+
+        protected ILogger Logger { get; private set; } =  CreateLogger() ?? new ConsoleLogger();
 
         /// <summary>
         /// Sets the logger instance

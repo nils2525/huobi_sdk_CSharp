@@ -175,7 +175,7 @@ namespace Huobi.SDK.Core.WSBase
         /// <param name="e"></param>
         private void OnError(object sender, ErrorEventArgs e)
         {
-            Logger.Log(Log.LogLevel.Error, $"WebSocket error: {e.Message}");
+            Logger.Log(Log.LogLevel.Error, $"WebSocket error: {e.Message} | {e.Exception}");
         }
 
         /// <summary>

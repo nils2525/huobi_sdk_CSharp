@@ -1,9 +1,8 @@
-﻿using System;
-using Newtonsoft.Json.Linq;
+﻿using Huobi.SDK.Core.RequestBuilder;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
 using WebSocketSharp;
-using Huobi.SDK.Core.Log;
-using Huobi.SDK.Core.RequestBuilder;
 
 namespace Huobi.SDK.Core.WSBase
 {
@@ -17,7 +16,7 @@ namespace Huobi.SDK.Core.WSBase
         Delegate callbackFun = null;
         Type paramType = null;
         bool autoReconnect = false;
-        
+
         protected WebSocket websocket = null;
         private bool isConnected = false;
         private bool isManclose = false;
@@ -66,6 +65,9 @@ namespace Huobi.SDK.Core.WSBase
             string url = $"{Host.WS_PRO}://{host}{path}";
             // System.Console.WriteLine(url);
             websocket = new WebSocket(url);
+            websocket.Log.Output = (d, m) =>
+            { /* Disable logger */ };
+
             websocket.SslConfiguration.EnabledSslProtocols = System.Security.Authentication.SslProtocols.None;
 
             websocket.OnOpen += OnOpen;
@@ -81,7 +83,7 @@ namespace Huobi.SDK.Core.WSBase
         /// </summary>
         public void Disconnect()
         {
-            if(websocket == null)
+            if (websocket == null)
             {
                 return;
             }
@@ -324,7 +326,7 @@ namespace Huobi.SDK.Core.WSBase
         /// <returns></returns>
         public bool SendMsg(string msg)
         {
-            if(!isConnected)
+            if (!isConnected)
             {
                 return false;
             }
